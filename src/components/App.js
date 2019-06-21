@@ -1,10 +1,10 @@
 import React from 'react';
-import Test from './Test';
+import GoogleAuth from './Header/GoogleAuth';
 
 const App = () => {
     return(
-        <div>
-            <Test />
+        <div className='container'>
+            <GoogleAuth/>
         </div>
     )
 }
