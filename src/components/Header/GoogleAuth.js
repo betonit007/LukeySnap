@@ -2,6 +2,8 @@ import React from 'react';
 import "./bootstrap-social.css";
 import Test from '../Test';
 
+
+
 const styleButton = {
     margin: '5px 0 5px 0'
 }
@@ -14,7 +16,7 @@ class GoogleAuth extends React.Component {
     componentDidMount() {
         window.gapi.load('client:auth2', () => {
             window.gapi.client.init({
-                clientId: '154231769000-ns568d3op8ul2aof9i27kv1rhk1ia4p2.apps.googleusercontent.com',
+                clientId: process.env.REACT_APP_DEV_OAUTH_ID,
                 scope: 'email'
             }).then(() => {
               this.auth = window.gapi.auth2.getAuthInstance();
