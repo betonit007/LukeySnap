@@ -1,38 +1,26 @@
 import React from 'react';
-import firebase from './firebase';
+import { connect } from 'react-redux';
 
+import firebase from './firebase';
 import YourSnap from './YourSnap';
 import ThereSnap from './ThereSnap';
+import { getStoredSnaps } from '../actions';
 
 
 class Test extends React.Component{
    
-    state = {
-        snapping: '',
-        snaps: '',
-       
-    }
-
-    handleInputChange = event => {
-        const { name, value } = event.target;
-        this.setState({
-            [name]: value,
-        })
-
-    }
 
     componentDidMount() {
         
         let database = firebase.database();
-        
         database.ref().on("value", snapshot => {
             const snapObj = snapshot.val();
             if (snapObj) {
               //Object.keys(snapObj).map(i => console.log(snapObj[i].snap)) //using Object.keys to map thru obj like array
-              this.setState({ snaps: snapObj });
+              this.props.getStoredSnaps(snapObj);
             }
         })
-        console.log(this.state);
+
     };
     ////This handles auto scroll to bottom of div where messages are update
     componentDidUpdate() {
@@ -41,50 +29,42 @@ class Test extends React.Component{
         console.log(this.props);
     }
 
-    handleSubmit() {
-        let database = firebase.database();
-        database.ref().push({
-            snap: this.state.snapping,
-            user: this.props.googleUser
-        })
-        console.log(this.state.snap);
-        this.setState({ snapping: ''})
-    }
-
     renderIndividualSnap(snap) {
-      if (this.state.snaps[snap].user === this.props.googleUser) {
-          console.log(snap);
-        return (
-          <>
-            <YourSnap 
-              snapText={this.state.snaps[snap].snap}
-              name = {this.state.snaps[snap].user}
-            />
-          </>               
-        )
-      }
-      else {
+      if (this.props.user) {
+        if (this.props.snaps[snap].user === this.props.user.FirstNam) {
           return (
             <>
-              <ThereSnap 
-                snapText={this.state.snaps[snap].snap}
-                name = {this.state.snaps[snap].user}
-              
+              <YourSnap 
+                snapText={this.props.snaps[snap].snap}
+                name = {this.props.snaps[snap].user}
+                img = {this.props.snaps[snap].img}
               />
-            </>      
+            </>               
           )
+        }
+        else {
+            return (
+              <>
+                <ThereSnap 
+                  snapText={this.props.snaps[snap].snap}
+                  name = {this.props.snaps[snap].user}
+                  img = {this.props.snaps[snap].img}
+                
+                />
+              </>      
+            )
+        }
       }
-    }
+  }
 
     renderSnaps() {
-        if (!this.state.snaps) {
+        if (!this.props.snaps) {
             return null
         }
         else {
-            console.log(this.state.snaps);
             return (
-                Object.keys(this.state.snaps).map(
-                    snap => (this.state.snaps[snap].snap 
+                Object.keys(this.props.snaps).map(
+                    snap => (this.props.snaps[snap].snap 
                         ? <div key={snap}>{this.renderIndividualSnap(snap)}</div>
                         : null))
             )
@@ -99,22 +79,17 @@ class Test extends React.Component{
 
     render() {
         return (
-              
-              <>
                 <div className='jumbotron' ref='wrap' style={{height:"70vh", overflowY:'auto'}}>
                     {this.renderSnaps()}
                 </div>
-                <div className="input-group input-group-lg">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text" id="inputGroup-sizing-lg">Text</span>
-                    </div>
-                    <input onChange={this.handleInputChange} type="text" className="form-control" name="snapping" value={this.state.snapping}/>
-                </div>
-                <button className="btn-primary btn" style={{marginTop:"5px"}} onClick={()=>this.handleSubmit()}>Submit</button>
-              </>
-
         )
     }
 }
 
-export default Test;
+const mapStateToProps = state => {
+  return {
+    user: state.currentUserId,
+    snaps: state.snaps};
+  }
+
+export default connect(mapStateToProps, {getStoredSnaps})(Test);

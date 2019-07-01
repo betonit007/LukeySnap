@@ -1,47 +1,58 @@
 import React from 'react';
 import "./bootstrap-social.css";
-import Test from '../Test';
-
-
+import { connect } from 'react-redux';
+import { getUserId } from '../../actions';
 
 const styleButton = {
     margin: '5px 0 5px 0'
 }
 
 class GoogleAuth extends React.Component {
-    state = {
-        isSignedIn: null,
-        googleUser: null
-    };
     componentDidMount() {
         window.gapi.load('client:auth2', () => {
             window.gapi.client.init({
                 clientId: process.env.REACT_APP_DEV_OAUTH_ID,
                 scope: 'email'
             }).then(() => {
-              this.auth = window.gapi.auth2.getAuthInstance();
-              const profile = this.auth.currentUser.get().getBasicProfile();
-              this.setState({ isSignedIn: this.auth.isSignedIn.get(), googleUser: this.auth.isSignedIn.get() ? profile.getGivenName() : null });
-              this.auth.isSignedIn.listen(this.onAuthChange);
+                this.auth = window.gapi.auth2.getAuthInstance();
+                if (this.auth.isSignedIn.get()) {
+                  this.auth.isSignedIn.listen(this.onAuthChange);
+                  let profile = this.getUserObject();
+                  this.props.getUserId(profile);
+                }    
+                else {
+                    this.auth.isSignedIn.listen(this.onAuthChange);
+                    this.props.getUserId({signedOut: true})
+                }
             });
         });
-        
     }
 
     onAuthChange = () => {
-        const profile = this.auth.currentUser.get().getBasicProfile();
-        this.setState({ isSignedIn: this.auth.isSignedIn.get(), googleUser: this.auth.isSignedIn.get() ? profile.getGivenName() : null })
+        if (this.auth.isSignedIn.get()) {
+            let userInfo = this.getUserObject();
+            this.props.getUserId(userInfo);
+        }
+        else {
+            this.props.getUserId({signedOut: true});
+        }
+    }
+
+    getUserObject() {
+        let profile2 = this.auth.currentUser.get().getBasicProfile();
+        let allUserInfo2 = {UserId: profile2.getId(),FirstNam: profile2.getGivenName(),LastName: profile2.getFamilyName(),Image: profile2.getImageUrl()} 
+        return allUserInfo2
     }
 
 
     renderAuthButton() {
-      if (this.state.isSignedIn === null) {
+      if (this.props.currentUserId === null) {
           return null;
-      }else if (this.state.isSignedIn) {
+      }else if (this.props.currentUserId.UserId) {
           return(
               <button onClick={this.auth.signOut} style={styleButton} className="btn btn-block btn-social btn-google">
                   <span className="fab fa-google"/>
-                  Sign Out
+                  {`Welcome ${this.props.currentUserId.FirstNam}, Press to Sign Out!`}
               </button>
             ) 
       }
@@ -58,14 +69,13 @@ class GoogleAuth extends React.Component {
         return(
             <div>
                 {this.renderAuthButton()}
-                <Test 
-                  signedIn = {this.state.isSignedIn}
-                  googleUser = {this.state.googleUser}
-                
-                />
             </div>
         )
     }
 }
 
-export default GoogleAuth;
+const mapStateToProps = state => {
+    return state;
+}
+
+export default connect(mapStateToProps, {getUserId})(GoogleAuth);

@@ -13,7 +13,8 @@ const YourSnap = (props) => {
     return (
         <div className='d-flex'>
           <div className="alert alert-primary" role="alert" style={{maxWidth:'75%'}}>
-             <span style={someStyle}>{props.name}</span><div style={snapStyle}>{props.snapText}</div>
+            <span><img className='img-fluid img-thumbnail'style={{height:'45px', width:'45px'}} alt={props.name} src={props.img}></img></span>
+             <span style={someStyle}>{props.name}- </span><span style={snapStyle}>{props.snapText}</span>
           </div>
         </div>
     )

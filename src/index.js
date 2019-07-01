@@ -1,11 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { createStore, compose } from 'redux';
+
 import App from './components/App';
+import reducers from './reducers';
 
 
 // Your web app's Firebase configuration
+const composeEnchancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(
+    reducers,
+    composeEnchancers()
+  );
 
 
 ReactDOM.render(
-    <App />, document.getElementById('root')
+  <Provider store={store}>
+    <App />
+  </Provider>, 
+  document.getElementById('root')
+  
 )
