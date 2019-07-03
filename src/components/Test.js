@@ -3,13 +3,11 @@ import { connect } from 'react-redux';
 
 import firebase from './firebase';
 import YourSnap from './YourSnap';
-import ThereSnap from './ThereSnap';
 import { getStoredSnaps } from '../actions';
 
 
 class Test extends React.Component{
    
-
     componentDidMount() {
         
         let database = firebase.database();
@@ -29,34 +27,6 @@ class Test extends React.Component{
         console.log(this.props);
     }
 
-    renderIndividualSnap(snap) {
-      if (this.props.user) {
-        if (this.props.snaps[snap].user === this.props.user.FirstNam) {
-          return (
-            <>
-              <YourSnap 
-                snapText={this.props.snaps[snap].snap}
-                name = {this.props.snaps[snap].user}
-                img = {this.props.snaps[snap].img}
-              />
-            </>               
-          )
-        }
-        else {
-            return (
-              <>
-                <ThereSnap 
-                  snapText={this.props.snaps[snap].snap}
-                  name = {this.props.snaps[snap].user}
-                  img = {this.props.snaps[snap].img}
-                
-                />
-              </>      
-            )
-        }
-      }
-  }
-
     renderSnaps() {
         if (!this.props.snaps) {
             return null
@@ -65,10 +35,15 @@ class Test extends React.Component{
             return (
                 Object.keys(this.props.snaps).map(
                     snap => (this.props.snaps[snap].snap 
-                        ? <div key={snap}>{this.renderIndividualSnap(snap)}</div>
-                        : null))
-            )
-        }
+                        ? <YourSnap 
+                            key={snap}
+                            snapText={this.props.snaps[snap].snap}
+                            name = {this.props.snaps[snap].user}
+                            img = {this.props.snaps[snap].img}
+                            fireId = {this.props.snaps[snap].userId}
+                            id = {this.props.user}
+                          /> : null))
+            )}
     }
     //deletworks just need to passId
     deleteSnap() {
@@ -87,6 +62,7 @@ class Test extends React.Component{
 }
 
 const mapStateToProps = state => {
+  console.log(state.snaps);
   return {
     user: state.currentUserId,
     snaps: state.snaps};
