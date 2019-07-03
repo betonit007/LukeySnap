@@ -18,12 +18,13 @@ class SnapInput extends React.Component {
     }
 
     onSubmit(formValues, otherProps) {
-        console.log(this.props);
+        console.log(otherProps);
         let database = firebase.database();
         database.ref().push({
             snap: formValues.snapEntered,
             user: otherProps.FirstNam,
-            img: otherProps.Image
+            img: otherProps.Image,
+            userId: otherProps.UserId
         })
         this.props.reset('snapEntered'); //reduxForm method that empties input field after submission
     }
