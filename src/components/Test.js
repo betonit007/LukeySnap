@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import firebase from './firebase';
 import YourSnap from './YourSnap';
 import { getStoredSnaps } from '../actions';
+import { getGifs } from '../actions';
 
 
 class Test extends React.Component{
    
     componentDidMount() {
-        
         let database = firebase.database();
         database.ref().on("value", snapshot => {
             const snapObj = snapshot.val();
@@ -18,13 +18,14 @@ class Test extends React.Component{
               this.props.getStoredSnaps(snapObj);
             }
         })
-
+        
+        
     };
     ////This handles auto scroll to bottom of div where messages are update
     componentDidUpdate() {
         const messageDiv = this.refs.wrap;
         messageDiv.scrollTop = messageDiv.scrollHeight;
-        console.log(this.props);
+        this.props.getGifs();
     }
 
     renderSnaps() {
@@ -62,10 +63,10 @@ class Test extends React.Component{
 }
 
 const mapStateToProps = state => {
-  console.log(state.snaps);
+  console.log(state);
   return {
     user: state.currentUserId,
     snaps: state.snaps};
   }
 
-export default connect(mapStateToProps, {getStoredSnaps})(Test);
+export default connect(mapStateToProps, {getStoredSnaps, getGifs})(Test);

@@ -1,3 +1,4 @@
+import calls from '../apis/calls';
 
 export const getUserId = id => {
     return {
@@ -13,4 +14,10 @@ export const getStoredSnaps = (snaps) => {
             payload: snaps
         }
     };
+
+export const getGifs = () => async (dispatch) => {
+  const res = await calls.get('video games&limit=25&offset=0&rating=G&lang=en');
+  
+  dispatch({ type: 'GET_GIFS', payload: res.data });
+}
 

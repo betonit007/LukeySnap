@@ -21,8 +21,18 @@ export const allSnaps = (snaps = null, action) => {
     }
 }
 
+export const allGifs = (gifs = [], action) => {
+    switch (action.type) {
+        case 'GET_GIFS':
+          return action.payload
+        default:
+            return gifs
+    }
+}
+
 export default combineReducers({
     currentUserId: currentUserId,
     snaps: allSnaps,
-    form: formReducer
+    form: formReducer,
+    gifs: allGifs
 })
