@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, reduxForm, reset } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 
 import { connect } from 'react-redux';
 import firebase from '../components/firebase';
@@ -30,12 +30,26 @@ class SnapInput extends React.Component {
     }
 
     render() {
-        return (                         //Struggled with next line of code to get state props passed into reduxForm handleSubmit
-            <form onSubmit={ this.props.handleSubmit((formValues)=>{this.onSubmit(formValues, this.props.userName);}) }> 
-                <Field name="snapEntered" component={this.renderInput} label='Enter Snap'/>
-                <button style={{marginTop:'5px'}} className="btn btn-primary">Submit</button>
-            </form>
-        );
+        if (!this.props.userName) {
+            return null
+        }
+        else if (this.props.userName.signedOut) {
+            return (                         
+                <div> Please sign in to enter a snap! </div>
+            )
+        }
+        else {
+            return (
+                
+                 //Struggled with next line of code to get state props passed into reduxForm handleSubmit
+                <form onSubmit={ this.props.handleSubmit((formValues)=>{this.onSubmit(formValues, this.props.userName);}) }> 
+                    <Field name="snapEntered" component={this.renderInput} label='Enter Snap'/>
+                    <button style={{marginTop:'5px'}} className="btn btn-primary">Submit</button>
+                </form>
+            )
+
+        }
+    
     }
 }
 

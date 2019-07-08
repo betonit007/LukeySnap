@@ -10,6 +10,7 @@ const snapStyle = {
 
 
 const ThereSnap = (props) => {
+  console.log(props);
     return (
         <div className={`d-flex ${true ? `justify-content-end` : ``}`}>
           <div className="alert alert-success" role="alert" style={{maxWidth:'75%'}}>
