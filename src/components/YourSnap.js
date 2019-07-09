@@ -10,7 +10,7 @@ const snapStyle = {
 
 
 const YourSnap = (props) => {
-  console.log(props);
+  
     return (
       <div className={props.id.signedOut ? 'd-flex justify-content-center' : props.id.UserId === props.fireId ? 'd-flex justify-content-end' : 'd-flex'}>
           <div className="alert alert-primary" role="alert" style={{maxWidth:'75%'}}>

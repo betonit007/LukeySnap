@@ -42,7 +42,7 @@ class Test extends React.Component{
                             name = {this.props.snaps[snap].user}
                             img = {this.props.snaps[snap].img}
                             fireId = {this.props.snaps[snap].userId}
-                            id = {this.props.user}
+                            id = {this.props.user ? this.props.user: false}
                           /> : null))
             )}
     }
